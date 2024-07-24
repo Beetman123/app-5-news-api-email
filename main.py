@@ -19,23 +19,32 @@ def send_email(message):
         server.login(username, password)
         server.sendmail(username, username, message)
 
+topic = "tesla"
 
 api_key = "7dd4541b873c4df4853d279dd12b6e20"
-url = "https://newsapi.org/v2/everything?q=tesla&from=2024-06-24&sortBy=publishedAt&apiKey=7dd4541b873c4df4853d279dd12b6e20"
+url = ("https://newsapi.org/v2/everything?"
+       f"q={topic}&"
+       "from=2024-06-24&"
+       "sortBy=publishedAt&"
+       "apiKey=7dd4541b873c4df4853d279dd12b6e20&"
+       "language=en")
 
 
 get_req = requests.get(url)
 content = get_req.json()
 
 message_header = """\
-Subject: newsapi about Tesla
+Subject: Today's news from newsapi
 
 Here is the list of articles about Tesla:
 """
 article_message = """"""
-for article in content['articles']:
+for article in content['articles'][:20]:
     if article["title"] is not None:
-        article_message += f"\n{article['title']} \n{article['description']}\n"
+        article_message += (f"\n"
+                            f"{article['title']}\n"
+                            f"{article['description']}\n"
+                            f"{article['url']}\n")
 
 email_message = message_header + article_message
 email_message = email_message.encode("utf-8")
